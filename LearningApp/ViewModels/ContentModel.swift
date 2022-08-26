@@ -16,6 +16,7 @@ class ContentModel: ObservableObject{
     
     init(){
         
+        getLocalData()
     }
     
     func getLocalData(){
