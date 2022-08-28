@@ -6,11 +6,19 @@
 //
 
 import Foundation
+import SwiftUI
 
 //contols all views and has the data,all of the properties,functions for views - this is going to be observableObject
 class ContentModel: ObservableObject{
     
+    
+    //List of modules
     @Published var modules = [Module]()
+    
+    // Current module for ContentView
+    @Published var currentModule: Module?
+    // keep the state of things like what lesson user is looking at or what question the user currently answering in the quiz Module? -- if the user hasnot selected a module yet,where they see all of the modules
+    var currentModuleIndex = 0
     
     var styleData: Data?
     
@@ -19,6 +27,8 @@ class ContentModel: ObservableObject{
         getLocalData()
     }
     
+    
+    // MARK: - Data methods
     func getLocalData(){
         
         
@@ -59,4 +69,26 @@ class ContentModel: ObservableObject{
         
         
     }
+    
+    // MARK: - Module navigation methods
+    //second way - we are going to keep track of the selected module through the view model which is in our ContentModel
+    func beginModule(_ moduleId: Int){
+        
+        // Find the index for this module id
+        for index in 0..<modules.count{
+            
+            if modules[index].id == moduleId{
+                
+                // Found the matching module
+                currentModuleIndex = index
+                break
+            }
+        }
+        
+        
+        // Set the currenbt module
+        currentModule = modules[currentModuleIndex]
+    }
+    
+    
 }

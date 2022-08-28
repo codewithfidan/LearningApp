@@ -19,7 +19,7 @@ struct HomeViewRow: View {
     
     var body: some View {
         ZStack{
-           
+            
             Rectangle()
                 .foregroundColor(.white)
                 .cornerRadius(10)
@@ -70,9 +70,7 @@ struct HomeViewRow: View {
                 .padding(.leading, 20)
             }
             .padding(.horizontal, 10)
-            
-        }.padding(.top)
-            .padding(.horizontal)
+        }
     }
 }
 
@@ -82,7 +80,7 @@ struct HomeViewRow_Previews: PreviewProvider {
     }
 }
 /*
-  because we dont have access module in this view that is why
+ because we dont have access module in this view that is why
  Image(module.content.image) --> Image(image)
  Text("Learn \(module.category)") --> Text(title)
  Text(module.content.description) --> Text(description)
@@ -90,4 +88,4 @@ struct HomeViewRow_Previews: PreviewProvider {
  Text(module.content.time) --> Text(time)
  
  
-*/
+ */
