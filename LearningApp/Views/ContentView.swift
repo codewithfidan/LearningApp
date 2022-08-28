@@ -26,7 +26,16 @@ struct ContentView: View {
                     
                     ForEach(0..<model.currentModule!.content.lessons.count, id: \.self){ index in
                         
-                       ContentViewRow(index: index)
+                        NavigationLink {
+                            ContentDetailView()
+                                .onAppear {
+                                    model.beginLesson(index)
+                                }
+                        } label: {
+                           ContentViewRow(index: index)
+                        }
+
+                        
                     }
                 }
             }.padding()
