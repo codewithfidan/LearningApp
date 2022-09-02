@@ -26,7 +26,7 @@ struct HomeView: View {
                             
                             VStack(){
                                 
-                                NavigationLink {
+                                NavigationLink(tag: module.id, selection: $model.currentContentSelected) {
                                     ContentView()
                                         .onAppear {
                                             model.beginModule(module.id)

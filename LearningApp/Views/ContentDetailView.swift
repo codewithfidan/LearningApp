@@ -19,6 +19,7 @@ struct ContentDetailView: View {
         //We used GitHub pages to host our information, but you can use your own server and get a URL that way as well.
         
         VStack{
+            // MARK: Video
             // Only show video if we get a valid url
             if url != nil {
                 //To add a VideoPlayer view, you need to import AVKit first.
@@ -29,7 +30,7 @@ struct ContentDetailView: View {
             // Description
             
             CodeTextView()
-            
+            // MARK: Next lesson button
             // Show next lesson button, only if there is a next lesson button
             if model.hasNextLesson(){
                 Button {
@@ -38,12 +39,26 @@ struct ContentDetailView: View {
                 } label: {
                     
                     ZStack{
-                        Rectangle()
-                            .frame(height: 48)
-                            .foregroundColor(.green)
-                            .cornerRadius(10)
-                            .shadow(radius: 5)
+                        RectangleCard(color: Color.green)
+                            .frame(height:48)
                         Text("Next lesson: \(model.currentModule!.content.lessons[model.currentLessonIndex + 1].title)")
+                            .bold()
+                            .foregroundColor(.white)
+                    }
+                }
+            }else{
+                
+                // MARK: back to the HomeView
+                // Show the complete button instead
+                Button {
+                    // Take the user back to the HomeView
+                    model.currentContentSelected = nil
+                } label: {
+                    
+                    ZStack{
+                        RectangleCard(color: Color.green)
+                            .frame(height:48)
+                        Text("Complete")
                             .bold()
                             .foregroundColor(.white)
                     }

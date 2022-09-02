@@ -30,6 +30,9 @@ class ContentModel: ObservableObject{
     
     var styleData: Data?
     
+    // Current selected content and test - for link in the HomeView and back to the HomeView
+    @Published var currentContentSelected: Int?
+    
     init(){
         
         getLocalData()
