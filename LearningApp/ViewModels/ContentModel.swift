@@ -24,6 +24,10 @@ class ContentModel: ObservableObject{
     @Published var currentLesson: Lesson?
     var currentLessonIndex = 0
     
+    
+    // Current lesson explanation
+    @Published var lessonDescription = NSAttributedString()
+    
     var styleData: Data?
     
     init(){
@@ -106,6 +110,7 @@ class ContentModel: ObservableObject{
         }
         // Set the current lesson
         currentLesson = currentModule!.content.lessons[currentLessonIndex]
+        lessonDescription = addStyling(htmlString: currentLesson!.explanation)
     }
     
     func hasNextLesson() -> Bool {
@@ -128,12 +133,50 @@ class ContentModel: ObservableObject{
             
             // Set current lesson property
             currentLesson = currentModule!.content.lessons[currentLessonIndex]
+            lessonDescription = addStyling(htmlString: currentLesson!.explanation)
         }else{
             
             //reset the lesson state
             currentLessonIndex = 0
             currentLesson = nil
         }
-            
+    }
+    
+    // MARK: Code styling
+    
+    private func addStyling(htmlString: String) -> NSAttributedString {
+        
+        var resultString = NSAttributedString()
+        var data = Data()
+        
+        // Add the styling data
+        if styleData != nil{
+            data.append(styleData!)
+        }
+        
+        // Add the html data
+        data.append(Data(htmlString.utf8))
+        
+        // Convert to attributed string
+        
+        // Technique 1  Using valid technique to handle an error --> 'if let x = try? ...'
+        
+        if let attributedString = try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil) {
+            resultString = attributedString
+        }
+        /*
+         Technique 2
+         
+         do{
+             if let attributedString = try? NSAttributedString(data: data, options: [.documentType: NSAttributedString.DocumentType.html], documentAttributes: nil) {
+                 resultString = attributedString
+             }
+         }catch{
+             print("Could not turn html into attributed string")
+         }
+         */
+        
+        
+        return resultString
     }
 }
