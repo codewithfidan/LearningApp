@@ -25,7 +25,7 @@ struct HomeView: View {
                         ForEach(model.modules){ module in
                             
                             VStack(){
-                                
+                                //You can add tags and selection parameters to your NavigationLink to track what navigation the user is on.
                                 NavigationLink(tag: module.id, selection: $model.currentContentSelected) {
                                     ContentView()
                                         .onAppear {
@@ -35,8 +35,20 @@ struct HomeView: View {
                                     //Learning card
                                     HomeViewRow(image: module.content.image, title: "Learn \(module.category)", description: module.content.description, count: "\(module.content.lessons.count) Lessons", time: module.content.time)
                                 }
-                                // Test card
-                                HomeViewRow(image: module.test.image, title: "\(module.category) Test", description: module.test.description, count: "\(module.test.questions.count) Questions", time: module.test.time)
+                                // we have the same tag: module.id but the difference is that we are going to use a different property to track test vs content
+                                NavigationLink(tag: module.id, selection: $model.currentTestSelected) {
+                                    TestView()
+                                        .onAppear {
+                                            model.beginTest(module.id)
+                                        }
+                                } label: {
+                                    // Test card
+                                    HomeViewRow(image: module.test.image, title: "\(module.category) Test", description: module.test.description, count: "\(module.test.questions.count) Questions", time: module.test.time)
+                                }
+                                // ios  14.5 bug -  if you have more than one navigationlink on the same view
+                                NavigationLink(destination: EmptyView()) {
+                                    EmptyView()
+                                }
                             }
                         }
                     }

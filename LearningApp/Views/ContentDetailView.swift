@@ -51,6 +51,10 @@ struct ContentDetailView: View {
                 // MARK: back to the HomeView
                 // Show the complete button instead
                 Button {
+                    /*
+                     unwind a navigation selection to go back Since the navigation is based on the selection binding, setting it to nil will unwind it back to the initial view.
+                     */
+
                     // Take the user back to the HomeView
                     model.currentContentSelected = nil
                 } label: {

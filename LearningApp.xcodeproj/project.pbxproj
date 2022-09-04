@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2229D2BC28C3CF4E005A1362 /* TestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2229D2BB28C3CF4E005A1362 /* TestView.swift */; };
 		222D774528BBB4D500EB3080 /* ContentDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222D774428BBB4D400EB3080 /* ContentDetailView.swift */; };
 		222D774828BBB92C00EB3080 /* AVKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 222D774728BBB92C00EB3080 /* AVKit.framework */; };
 		222D774A28BBCEF300EB3080 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 222D774928BBCEF300EB3080 /* Constants.swift */; };
@@ -26,6 +27,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		2229D2BB28C3CF4E005A1362 /* TestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestView.swift; sourceTree = "<group>"; };
 		222D774428BBB4D400EB3080 /* ContentDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentDetailView.swift; sourceTree = "<group>"; };
 		222D774728BBB92C00EB3080 /* AVKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVKit.framework; path = System/Library/Frameworks/AVKit.framework; sourceTree = SDKROOT; };
 		222D774928BBCEF300EB3080 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -128,6 +130,7 @@
 				2294414728B932190012EBF5 /* ContentView.swift */,
 				2294414928B9475A0012EBF5 /* ContentViewRow.swift */,
 				222D774428BBB4D400EB3080 /* ContentDetailView.swift */,
+				2229D2BB28C3CF4E005A1362 /* TestView.swift */,
 				222D778228BC089D00EB3080 /* CodeTextView.swift */,
 				228F13B228C29AE700D29380 /* RectangleCard.swift */,
 			);
@@ -216,6 +219,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2229D2BC28C3CF4E005A1362 /* TestView.swift in Sources */,
 				2261D72728B8008900CFFB92 /* HomeView.swift in Sources */,
 				22A0910B28B9100E00F15B25 /* HomeViewRow.swift in Sources */,
 				2294414828B9321A0012EBF5 /* ContentView.swift in Sources */,
