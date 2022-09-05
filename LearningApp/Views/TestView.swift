@@ -18,7 +18,7 @@ struct TestView: View {
         if submitted == true{
             if model.currentQuestionIndex + 1 == model.currentModule!.test.questions.count{
                 //this is the last question
-                return "Complete"
+                return "Finish"
             }else{
                 return "Next"
             }
@@ -137,11 +137,24 @@ struct TestView: View {
                 
                 
             }.navigationTitle("\(model.currentModule?.category ?? "hello") Test")
-        }else{ // we write else option because when we click navigationlink in homeview ti shows us empty view
+        }else{
+            
+            /* if currentQuestion = nil, show the TestResultView.
+             now currentQuestion = nil, because we write in the nextQuestion()
+             
+              //currentQuestionIndex == currentModule!.test.questions.count
+              //if not, reset the properties
+             currentQuestionIndex = 0
+             currentQuestion = nil
+            */
+            
+            
+            TestResultView(numCorrect: numCorrect)
+            // we write else option because when we click navigationlink in homeview ti shows us empty view
             
             
             // Test has not loaded yet
-            ProgressView()
+            //ProgressView()
             //The progress view in SwiftUI is a native view that was introduced in WWDC 2020 and makes it really easy to indicate visually the progress of long-running tasks that take time to complete.
         }
         
