@@ -152,7 +152,7 @@ class ContentModel: ObservableObject{
             currentLesson = nil
         }
     }
-    // MARK: Question
+    // MARK: - Question
     
     func beginTest(_ moduleId: Int){
         
@@ -171,7 +171,26 @@ class ContentModel: ObservableObject{
         }
     }
     
-    // MARK: Code styling
+    func nextQuestion(){
+        
+        // Advance the question index
+        currentQuestionIndex += 1
+        
+        // Check that it is within the range of questions
+        if currentQuestionIndex < currentModule!.test.questions.count{
+            
+            currentQuestion = currentModule?.test.questions[currentQuestionIndex]
+            codeTextDescription = addStyling(htmlString: currentQuestion!.content)
+            
+        }else{
+            // currentQuestionIndex == currentModule!.test.questions.count
+            // if not, reset the properties
+            currentQuestionIndex = 0
+            currentQuestion = nil
+        }
+    }
+    
+    // MARK: - Code styling
     
     private func addStyling(htmlString: String) -> NSAttributedString {
         
