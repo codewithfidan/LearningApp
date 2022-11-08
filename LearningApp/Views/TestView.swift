@@ -13,6 +13,7 @@ struct TestView: View {
     @State var selectedAnswerIndex: Int?
     @State var numCorrect = 0
     @State var submitted = false
+    @State var showResults = false
     
     var buttonText: String{
         if submitted == true{
@@ -31,7 +32,7 @@ struct TestView: View {
     var body: some View {
         
         
-        if model.currentQuestion != nil {
+        if model.currentQuestion != nil && showResults ==  false {
             
             VStack(alignment: .leading){
                 
@@ -103,12 +104,19 @@ struct TestView: View {
                     // Check if answer has been submitted
                     if submitted == true{
                         
-                        // Answer has already been submitted, move to next question
-                        model.nextQuestion()
+                        // check if it is the last question
+                        if model.currentQuestionIndex + 1 == model.currentModule!.test.questions.count{
+                            showResults = true
+                        }else{
+                            
+                            // Answer has already been submitted, move to next question
+                            model.nextQuestion()
+                            
+                            // Reset properties - this is going to allow the user again to select a new answer for the next question.
+                            submitted = false
+                            selectedAnswerIndex = nil
+                        }
                         
-                        // Reset properties - this is going to allow the user again to select a new answer for the next question.
-                        submitted = false
-                        selectedAnswerIndex = nil
                     }else{
                         // 1. when button tapped it comes here first
                         // Submit the answer
@@ -137,7 +145,8 @@ struct TestView: View {
                 
                 
             }.navigationTitle("\(model.currentModule?.category ?? "hello") Test")
-        }else{
+        }
+        else if showResults == true{
             
             /* if currentQuestion = nil, show the TestResultView.
              now currentQuestion = nil, because we write in the nextQuestion()

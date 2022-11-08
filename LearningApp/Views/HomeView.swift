@@ -26,17 +26,19 @@ struct HomeView: View {
                             
                             VStack(){
                                 //You can add tags and selection parameters to your NavigationLink to track what navigation the user is on.
-                                NavigationLink(tag: module.id, selection: $model.currentContentSelected) {
-                                    ContentView()
-                                        .onAppear {
+                                NavigationLink(tag: module.id.hash, selection: $model.currentContentSelected) {
+                                    ContentView().onAppear {
                                             model.beginModule(module.id)
                                         }
+//                                    .onDisappear(perform: {
+//                                        model.currentModule = nil
+//                                    })
                                 } label: {
                                     //Learning card
                                     HomeViewRow(image: module.content.image, title: "Learn \(module.category)", description: module.content.description, count: "\(module.content.lessons.count) Lessons", time: module.content.time)
                                 }
                                 // we have the same tag: module.id but the difference is that we are going to use a different property to track test vs content
-                                NavigationLink(tag: module.id, selection: $model.currentTestSelected) {
+                                NavigationLink(tag: module.id.hash, selection: $model.currentTestSelected) {
                                     TestView()
                                         .onAppear {
                                             model.beginTest(module.id)
@@ -49,7 +51,7 @@ struct HomeView: View {
                                 NavigationLink(destination: EmptyView()) {
                                     EmptyView()
                                 }
-                            }
+                            }.padding(.bottom, 5)
                         }
                     }
                     .accentColor(.black)
@@ -57,6 +59,17 @@ struct HomeView: View {
                     
                 }
             }.navigationBarTitle("Get Started")
+                .onChange(of: model.currentContentSelected) { changedValue in
+                    if changedValue == nil{
+                        model.currentModule = nil
+                    }
+                }
+                .onChange(of: model.currentTestSelected) { changedValue in
+                    if changedValue == nil{
+                        model.currentModule = nil
+                        
+                    }
+                }
         }.navigationViewStyle(.stack)
     }
 }
