@@ -27,8 +27,11 @@ struct HomeView: View {
                             VStack(){
                                 //You can add tags and selection parameters to your NavigationLink to track what navigation the user is on.
                                 NavigationLink(tag: module.id.hash, selection: $model.currentContentSelected) {
-                                    ContentView().onAppear {
-                                            model.beginModule(module.id)
+                                    ContentView()
+                                        .onAppear {
+                                            model.getLessons(module: module) {
+                                                model.beginModule(module.id)
+                                            }
                                         }
 //                                    .onDisappear(perform: {
 //                                        model.currentModule = nil
@@ -41,7 +44,9 @@ struct HomeView: View {
                                 NavigationLink(tag: module.id.hash, selection: $model.currentTestSelected) {
                                     TestView()
                                         .onAppear {
-                                            model.beginTest(module.id)
+                                            model.getQuestions(module: module) {
+                                                model.beginTest(module.id)
+                                            }
                                         }
                                 } label: {
                                     // Test card

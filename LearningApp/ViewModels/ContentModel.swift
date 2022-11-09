@@ -89,7 +89,6 @@ class ContentModel: ObservableObject{
                     m.content.image = contentMap["image"] as? String ?? ""
                     m.content.time = contentMap["time"] as? String ?? ""
                     
-                    
                     // Parse the test content
                     let testMap = doc["test"] as! [String:Any]
                     m.test.id = testMap["id"] as? String ?? ""
@@ -110,7 +109,102 @@ class ContentModel: ObservableObject{
         }
     }
     
+    func getLessons(module: Module, copmletion: @escaping () -> Void){
+        
+        // Specify path
+        let collection = db.collection("modules").document(module.id).collection("lessons")
+        
+        // Get documents
+        collection.getDocuments { querySnapshot, error in
+            
+            if error == nil && querySnapshot != nil{    // We have  some data
+                
+                // Array to track lessons
+                var lessons = [Lesson]()
+                
+                // Loop through the documents and build array of lessons
+                for doc in querySnapshot!.documents{
+                    
+                    // New lesson
+                    var l = Lesson()
+                    
+                    l.id = doc["id"] as? String ?? UUID().uuidString
+                    l.title = doc["title"] as? String ?? ""
+                    l.explanation = doc["explanation"] as? String ?? ""
+                    l.video = doc["video"] as? String ?? ""
+                    l.duration = doc["duration"] as? String ?? ""
+                    
+                    // Add the lesson to the array
+                    lessons.append(l)
+                }
+                
+                // Setting the lessons to the module
+                // Loop through published modules array and find the one that matches the id of the copy that got passed in
+                // We dont do that usual way because modules is struct
+                for (index, m) in self.modules.enumerated(){
+                    
+                    // Find the module we want
+                    if m.id == module.id{
+                    
+                        // Set the lessons
+                        self.modules[index].content.lessons = lessons
+                        
+                        // Call the completion closure for the  model.beginTest(module.id)
+                        copmletion()
+                    }
+                }
+                
+            }
+        }
+    }
     
+    func getQuestions(module: Module, completion: @escaping () -> Void){
+        
+        // Specify path
+        let collection = db.collection("modules").document(module.id).collection("questions")
+        
+        // Get documents
+        collection.getDocuments { querySnapshot, error in
+            
+            if error == nil && querySnapshot != nil{
+                
+                // Array to track questions
+                var questions = [Question]()
+                
+                // Loop through the documents and build array of questions
+                for doc in querySnapshot!.documents{
+                    
+                    var q = Question()
+                    
+                    q.id = doc["id"] as? String ?? UUID().uuidString
+                    q.content = doc["content"] as? String ?? ""
+                    q.correctIndex = doc["correctIndex"] as? Int ?? 0
+                    q.answers = doc["answers"] as? [String] ?? [String]()
+                    
+                    // Add the questions to the array
+                    questions.append(q)
+                    
+                }
+                
+                // Setting the questions to the module
+                // Loop through published modules array and find the one that matches the id of the copy that got passed in
+                // We dont do that usual way because modules is struct
+                for (index, q) in self.modules.enumerated(){
+                    
+                    // Find the module we want
+                    if q.id == module.id{
+                        
+                        // Set the questions
+                        self.modules[index].test.questions = questions
+                        
+                        // Call the completion closure for the  model.beginTest(module.id)
+                        completion()
+                    }
+                }
+            }
+        }
+        
+    }
     // local json file in the xcode project, if you upload app to the appstore, it is going to part of app bundle and you can not update it without submitting an app update to the app store
     
     // Parse local included json data
