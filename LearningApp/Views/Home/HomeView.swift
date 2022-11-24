@@ -19,11 +19,9 @@ struct HomeView: View {
                     .padding(.leading)
                 
                 ScrollView{
-                    
                     LazyVStack{
-                        
                         ForEach(model.modules){ module in
-                            
+
                             VStack(){
                                 //You can add tags and selection parameters to your NavigationLink to track what navigation the user is on.
                                 NavigationLink(tag: module.id.hash, selection: $model.currentContentSelected) {
@@ -33,14 +31,12 @@ struct HomeView: View {
                                                 model.beginModule(module.id)
                                             }
                                         }
-//                                    .onDisappear(perform: {
-//                                        model.currentModule = nil
-//                                    })
                                 } label: {
                                     //Learning card
                                     HomeViewRow(image: module.content.image, title: "Learn \(module.category)", description: module.content.description, count: "\(module.content.lessons.count) Lessons", time: module.content.time)
                                 }
                                 // we have the same tag: module.id but the difference is that we are going to use a different property to track test vs content
+                                /*
                                 NavigationLink(tag: module.id.hash, selection: $model.currentTestSelected) {
                                     TestView()
                                         .onAppear {
@@ -52,6 +48,7 @@ struct HomeView: View {
                                     // Test card
                                     HomeViewRow(image: module.test.image, title: "\(module.category) Test", description: module.test.description, count: "\(module.test.questions.count) Questions", time: module.test.time)
                                 }
+                                 */
                                 // ios  14.5 bug -  if you have more than one navigationlink on the same view
                                 NavigationLink(destination: EmptyView()) {
                                     EmptyView()
@@ -61,7 +58,6 @@ struct HomeView: View {
                     }
                     .accentColor(.black)
                     .padding()
-                    
                 }
             }.navigationBarTitle("Get Started")
                 .onChange(of: model.currentContentSelected) { changedValue in

@@ -8,12 +8,17 @@
 import Foundation
 import FirebaseCore
 import FirebaseFirestore
+import FirebaseAuth
 
 //contols all views and has the data,all of the properties,functions for views - this is going to be observableObject
 class ContentModel: ObservableObject{
     
     // Get the reference to the database
     let db = Firestore.firestore()
+    
+    // Authentication
+    @Published var loggedIn = false
+    
     
     //List of modules
     @Published var modules = [Module]()
@@ -46,13 +51,22 @@ class ContentModel: ObservableObject{
     
     init(){
         
-        // Parse local style.html
-        getLocalStyles()
+    }
+    
+    
+    // MARK: - Authentication methods
+    
+    func checkLogin(){
         
-        // Get database modules
-        getDatabaseModules()
+        // Check if there is a current user to determine logged in status
+        loggedIn = Auth.auth().currentUser != nil ? true : false
         
-        // getRemoteData()
+        // Check if user meta data has been fetched. if the user was already logged in from a previous session, we need to get their data in a seperate call.
+        
+        if UserService.shared.user.name == ""{
+            getUserData()
+        }
+        
     }
     
     
@@ -60,6 +74,9 @@ class ContentModel: ObservableObject{
     
     func getDatabaseModules(){
          
+        // Parse local style.html
+        getLocalStyles()
+        
         // Specify path
         let collection = db.collection("modules")
         
@@ -108,8 +125,37 @@ class ContentModel: ObservableObject{
             }
         }
     }
+    func getUserData(){
+        
+        // Check that there is a logged in user
+        guard Auth.auth().currentUser != nil else{
+            return
+        }
+        
+        // Get the meta data for that user
+        let db = Firestore.firestore()
+        let ref = db.collection("users").document(Auth.auth().currentUser!.uid)
+        
+        ref.getDocument { documentSnapshot, error in
+            
+            // Check there are no errors
+            guard error == nil, documentSnapshot != nil else{
+                return
+                
+            }
+            
+            // Parse the data out and set the user meta data
+            let data = documentSnapshot!.data()
+            var user = UserService.shared.user
+            
+            user.name = data!["name"] as? String ?? ""
+            user.lastModule = data!["lastModule"] as? Int ?? nil
+            user.lastLesson = data!["lastLesson"] as? Int ?? nil
+            user.lastQuestion = data!["lastQuestion"] as? Int ?? nil
+        }
+    }
     
-    func getLessons(module: Module, copmletion: @escaping () -> Void){
+    func getLessons(module: Module, completion: @escaping () -> Void){
         
         // Specify path
         let collection = db.collection("modules").document(module.id).collection("lessons")
@@ -150,7 +196,7 @@ class ContentModel: ObservableObject{
                         self.modules[index].content.lessons = lessons
                         
                         // Call the completion closure for the  model.beginTest(module.id)
-                        copmletion()
+                        completion()
                     }
                 }
                 
@@ -166,35 +212,35 @@ class ContentModel: ObservableObject{
         // Get documents
         collection.getDocuments { querySnapshot, error in
             
-            if error == nil && querySnapshot != nil{
+            if error == nil && querySnapshot != nil{    // We have  some data
                 
-                // Array to track questions
+                // Array to track lessons
                 var questions = [Question]()
                 
-                // Loop through the documents and build array of questions
+                // Loop through the documents and build array of lessons
                 for doc in querySnapshot!.documents{
                     
+                    // New lesson
                     var q = Question()
                     
                     q.id = doc["id"] as? String ?? UUID().uuidString
                     q.content = doc["content"] as? String ?? ""
                     q.correctIndex = doc["correctIndex"] as? Int ?? 0
-                    q.answers = doc["answers"] as? [String] ?? [String]()
+                    //q.answers = doc["answers"] as? [String] ?? [String]()
                     
-                    // Add the questions to the array
+                    // Add the lesson to the array
                     questions.append(q)
-                    
                 }
                 
-                // Setting the questions to the module
+                // Setting the lessons to the module
                 // Loop through published modules array and find the one that matches the id of the copy that got passed in
                 // We dont do that usual way because modules is struct
-                for (index, q) in self.modules.enumerated(){
+                for (index, m) in self.modules.enumerated(){
                     
                     // Find the module we want
-                    if q.id == module.id{
-                        
-                        // Set the questions
+                    if m.id == module.id{
+                    
+                        // Set the lessons
                         self.modules[index].test.questions = questions
                         
                         // Call the completion closure for the  model.beginTest(module.id)
@@ -203,7 +249,6 @@ class ContentModel: ObservableObject{
                 }
             }
         }
-        
     }
     // local json file in the xcode project, if you upload app to the appstore, it is going to part of app bundle and you can not update it without submitting an app update to the app store
     
@@ -386,10 +431,11 @@ class ContentModel: ObservableObject{
         
         // if there are questions, set the current question to the first one
         if currentModule?.test.questions.count ?? 0 > 0 {  // if currentModule is nil, we just assume is 0
+            
             currentQuestion = currentModule?.test.questions[currentQuestionIndex]
             
             // Set the question content
-            codeTextDescription = addStyling(htmlString: currentQuestion?.content ?? "")
+            codeTextDescription = addStyling(htmlString: currentQuestion!.content)
         }
     }
     

@@ -11,4 +11,9 @@ struct Constants {
     
     static let videoHostUrl = "https://codewithchris.github.io/learningJSON/"
     static let dataHostUrl = "https://codewithfidan.github.io/LearningApp-data/data2.json"
+
+    enum LoginMode{
+        case login
+        case createAccount
+    }
 }
